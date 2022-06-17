@@ -1,0 +1,79 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://spring.io/guides/gs-producing-web-service"
+           targetNamespace="http://spring.io/guides/gs-producing-web-service" elementFormDefault="qualified">
+
+    <xs:element name="getListUsersWithoutRolesRequest">
+    </xs:element>
+
+    <xs:element name="getListUsersWithoutRolesResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="userList" type="tns:users" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getUserByLoginWithRolesRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="login" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getUserByLoginWithRolesResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="user" type="tns:users"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="deleteUserByLoginRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="login" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="deleteUserByLoginResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="success" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addNewUserWithRolesRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="user" type="tns:users"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addNewUserWithRolesResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="success" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="users">
+        <xs:sequence>
+            <xs:element name="login" type="xs:string"/>
+            <xs:element name="firstName" type="xs:int"/>
+            <xs:element name="password" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="roles">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long"/>
+            <xs:element name="rolesName" type="xs:string"/>
+            <xs:element name="loginUsers" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>
