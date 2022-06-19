@@ -14,6 +14,7 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlTransient;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -87,11 +88,39 @@ public class UsersEndpoint {
         return response;
     }
 
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getUserByLoginWithRolesRequest")
+    @ResponsePayload
+    public GetUserByLoginWithRolesResponse getUserByLoginWithRolesResponse(@RequestPayload GetUserByLoginWithRolesRequest request){
+        GetUserByLoginWithRolesResponse response = new GetUserByLoginWithRolesResponse();
+        Users user = usersDao.getUserByLoginWithRoles(request.getLogin());
+
+        UserXml userXml = marshal(user);
+
+        response.setUser(userXml);
+
+        return response;
+    }
     public UserXml marshal(Users user) {
         UserXml userXml = new UserXml();
         userXml.setLogin(user.getLogin());
         userXml.setFirstName(user.getFirstName());
         userXml.setPassword(user.getPassword());
+
+        List<Roles> rolesList = user.getRolesList();
+        if (rolesList.size() == 0){
+            return userXml;
+        }
+        else{
+
+            List<RolesXml> rolesXmlList = new ArrayList<>();
+            for (int i=0; i<user.getRolesList().size(); i++){
+                RolesXml rolesXml = new RolesXml(rolesList.get(i).getId(),
+                        rolesList.get(i).getNameRole(), rolesList.get(i).getUser().getLogin());
+                rolesXmlList.add(rolesXml);
+            }
+
+            userXml.setRoleList(rolesXmlList);
+        }
         return userXml;
     }
 

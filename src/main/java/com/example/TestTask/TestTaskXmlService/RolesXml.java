@@ -108,4 +108,12 @@ public class RolesXml {
         this.loginUsers = value;
     }
 
+    public RolesXml(long id, String rolesName, String loginUsers) {
+        this.id = id;
+        this.rolesName = rolesName;
+        this.loginUsers = loginUsers;
+    }
+
+    public RolesXml() {
+    }
 }

@@ -24,7 +24,7 @@ public class Roles {
     @Column(name = "name_role")
     private String nameRole;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "login")
     @XmlTransient
     private Users user;

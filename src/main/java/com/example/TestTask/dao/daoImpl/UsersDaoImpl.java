@@ -1,7 +1,9 @@
 package com.example.TestTask.dao.daoImpl;
 
 import com.example.TestTask.TestTaskXmlService.UserXml;
+import com.example.TestTask.dao.RolesDao;
 import com.example.TestTask.dao.UsersDao;
+import com.example.TestTask.models.Roles;
 import com.example.TestTask.models.Users;
 
 import java.util.ArrayList;
@@ -43,6 +45,8 @@ public class UsersDaoImpl implements UsersDao {
         Query query = session.createQuery("from Users where login = :login");
         query.setParameter("login", login);
         Users users = (Users) query.getSingleResult();
+
+        users.getRolesList();
 
         session.close();
         return users;

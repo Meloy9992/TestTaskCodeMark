@@ -152,4 +152,7 @@ public class UserXml extends Users {
         return this.roleList;
     }
 
+    public void setRoleList(List<RolesXml> roleList) {
+        this.roleList = roleList;
+    }
 }

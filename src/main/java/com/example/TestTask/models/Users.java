@@ -26,7 +26,7 @@ public class Users {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @XmlTransient
     private List<Roles> rolesList;
 
