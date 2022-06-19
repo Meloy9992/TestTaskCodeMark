@@ -57,8 +57,9 @@ public class UsersDaoImpl implements UsersDao {
         Session session = getSessionFactory().openSession();
         session.beginTransaction();
         try {
-            Users user = getUserByLoginWithRoles(login);
-            session.delete(user);
+            session.createQuery("DELETE Users WHERE login = :login")
+                    .setParameter("login", login)
+                    .executeUpdate();
             session.getTransaction().commit();
             session.close();
         }

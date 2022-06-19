@@ -68,11 +68,12 @@ public class UsersEndpoint {
             for (int i=0; i< rolesList.size(); i++)
                 rolesDao.AddNewRoles(rolesList.get(i));
 
-            response.setSuccess(true);
         }catch (Exception e){
             System.out.println("Неудалось добавить информацию в БД");
             response.setSuccess(false);
+            return response;
         }
+        response.setSuccess(true);
         return response;
     }
 
@@ -100,6 +101,21 @@ public class UsersEndpoint {
 
         return response;
     }
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "deleteUserByLoginRequest")
+    @ResponsePayload
+    public DeleteUserByLoginResponse deleteUserByLoginResponse(@RequestPayload DeleteUserByLoginRequest request){
+        DeleteUserByLoginResponse response = new DeleteUserByLoginResponse();
+
+        Users users = usersDao.getUserByLoginWithRoles(request.getLogin());
+
+        rolesDao.DeleteRole(users);
+        usersDao.DeleteUserByLogin(request.getLogin());
+        
+        response.setSuccess(true);
+        return response;
+    }
+
     public UserXml marshal(Users user) {
         UserXml userXml = new UserXml();
         userXml.setLogin(user.getLogin());
