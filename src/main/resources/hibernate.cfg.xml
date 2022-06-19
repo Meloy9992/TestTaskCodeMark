@@ -7,22 +7,16 @@
     <session-factory>
 
         <property name="hibernate.hbm2ddl.auto">update</property>
-        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/Db_var2</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/Db_TestTask</property>
         <property name="hibernate.connection.username">postgres</property>
         <property name="hibernate.connection.password">6647</property>
         <property name="hibernate.connection.characterEncoding">utf8</property>
-        <property name="hibernate.dialect"a>org.hibernate.dialect.PostgreSQL94Dialect</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL94Dialect</property>
         <property name="show_sql">true</property>
 
-        <mapping class="com.example.labdb.models.Staff"/>
-        <mapping class="com.example.labdb.models.User"/>
-        <mapping class="com.example.labdb.models.Ingredients"/>
-        <mapping class="com.example.labdb.models.Drink"/>
-        <mapping class="com.example.labdb.models.Dish"/>
-        <mapping class="com.example.labdb.models.OtherGoods"/>
-        <mapping class="com.example.labdb.models.Manufacturer"/>
-        <mapping class="com.example.labdb.models.Kind"/>
-        <mapping class="com.example.labdb.models.CompositionDish"/>
+        <mapping class="com.example.TestTask.models.Roles"/>
+        <mapping class="com.example.TestTask.models.Users"/>
+
 
     </session-factory>
 </hibernate-configuration>

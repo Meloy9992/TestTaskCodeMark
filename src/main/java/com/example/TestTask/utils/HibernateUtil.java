@@ -1,4 +1,4 @@
-package com.example.labdb.utils;
+package com.example.TestTask.utils;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
