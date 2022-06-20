@@ -1,6 +1,12 @@
 
 package com.example.TestTask.TestTaskXmlService;
 
+import com.example.TestTask.TestTaskXmlService.DeleteUserByLoginRequest;
+import com.example.TestTask.TestTaskXmlService.DeleteUserByLoginResponse;
+import com.example.TestTask.TestTaskXmlService.GetListUsersWithoutRolesResponse;
+import com.example.TestTask.TestTaskXmlService.GetUserByLoginWithRolesRequest;
+import com.example.TestTask.TestTaskXmlService.GetUserByLoginWithRolesResponse;
+
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
@@ -25,15 +31,27 @@ public interface UsersPort {
 
     /**
      * 
+     * @param editUserRequest
+     * @return
+     *     returns com.example.TestTask.TestTaskXmlService.EditUserResponse
+     */
+    @WebMethod(operationName = "EditUser")
+    @WebResult(name = "EditUserResponse", targetNamespace = "http://localhost:8082", partName = "EditUserResponse")
+    public EditUserResponse editUser(
+        @WebParam(name = "EditUserRequest", targetNamespace = "http://localhost:8082", partName = "EditUserRequest")
+        EditUserRequest editUserRequest);
+
+    /**
+     * 
      * @param getUserByLoginWithRolesRequest
      * @return
-     *     returns com.example.TestTask.TestTaskXmlService.GetUserByLoginWithRolesResponse
+     *     returns GetUserByLoginWithRolesResponse
      */
     @WebMethod
     @WebResult(name = "getUserByLoginWithRolesResponse", targetNamespace = "http://localhost:8082", partName = "getUserByLoginWithRolesResponse")
     public GetUserByLoginWithRolesResponse getUserByLoginWithRoles(
         @WebParam(name = "getUserByLoginWithRolesRequest", targetNamespace = "http://localhost:8082", partName = "getUserByLoginWithRolesRequest")
-        GetUserByLoginWithRolesRequest getUserByLoginWithRolesRequest);
+                GetUserByLoginWithRolesRequest getUserByLoginWithRolesRequest);
 
     /**
      * 
@@ -49,21 +67,9 @@ public interface UsersPort {
 
     /**
      * 
-     * @param addFromIdRequest
-     * @return
-     *     returns com.example.TestTask.TestTaskXmlService.AddFromIdResponse
-     */
-    @WebMethod(operationName = "AddFromId")
-    @WebResult(name = "AddFromIdResponse", targetNamespace = "http://localhost:8082", partName = "AddFromIdResponse")
-    public AddFromIdResponse addFromId(
-        @WebParam(name = "AddFromIdRequest", targetNamespace = "http://localhost:8082", partName = "AddFromIdRequest")
-        AddFromIdRequest addFromIdRequest);
-
-    /**
-     * 
      * @param getListUsersWithoutRolesRequest
      * @return
-     *     returns com.example.TestTask.TestTaskXmlService.GetListUsersWithoutRolesResponse
+     *     returns GetListUsersWithoutRolesResponse
      */
     @WebMethod
     @WebResult(name = "getListUsersWithoutRolesResponse", targetNamespace = "http://localhost:8082", partName = "getListUsersWithoutRolesResponse")
@@ -75,12 +81,12 @@ public interface UsersPort {
      * 
      * @param deleteUserByLoginRequest
      * @return
-     *     returns com.example.TestTask.TestTaskXmlService.DeleteUserByLoginResponse
+     *     returns DeleteUserByLoginResponse
      */
     @WebMethod
     @WebResult(name = "deleteUserByLoginResponse", targetNamespace = "http://localhost:8082", partName = "deleteUserByLoginResponse")
     public DeleteUserByLoginResponse deleteUserByLogin(
         @WebParam(name = "deleteUserByLoginRequest", targetNamespace = "http://localhost:8082", partName = "deleteUserByLoginRequest")
-        DeleteUserByLoginRequest deleteUserByLoginRequest);
+                DeleteUserByLoginRequest deleteUserByLoginRequest);
 
 }

@@ -12,4 +12,8 @@ public interface RolesDao {
     boolean AddNewRoles(Roles roles);
 
     boolean DeleteRole(Users users);
+
+    Roles getRoles(long id);
+
+    Long getLastId();
 }

@@ -1,6 +1,14 @@
 
 package com.example.TestTask.TestTaskXmlService;
 
+import com.example.TestTask.TestTaskXmlService.DeleteUserByLoginRequest;
+import com.example.TestTask.TestTaskXmlService.DeleteUserByLoginResponse;
+import com.example.TestTask.TestTaskXmlService.GetListUsersWithoutRolesResponse;
+import com.example.TestTask.TestTaskXmlService.GetUserByLoginWithRolesRequest;
+import com.example.TestTask.TestTaskXmlService.GetUserByLoginWithRolesResponse;
+import com.example.TestTask.TestTaskXmlService.RolesXml;
+import com.example.TestTask.TestTaskXmlService.UserXml;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
@@ -45,7 +53,7 @@ public class ObjectFactory {
      * Create an instance of {@link UserXml }
      * 
      */
-    public UserXml createUsers() {
+    public UserXml createUser() {
         return new UserXml();
     }
 
@@ -98,19 +106,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link AddFromIdRequest }
+     * Create an instance of {@link EditUserRequest }
      * 
      */
-    public AddFromIdRequest createAddFromIdRequest() {
-        return new AddFromIdRequest();
+    public EditUserRequest createEditUserRequest() {
+        return new EditUserRequest();
     }
 
     /**
-     * Create an instance of {@link AddFromIdResponse }
+     * Create an instance of {@link EditUserResponse }
      * 
      */
-    public AddFromIdResponse createAddFromIdResponse() {
-        return new AddFromIdResponse();
+    public EditUserResponse createEditUserResponse() {
+        return new EditUserResponse();
     }
 
     /**

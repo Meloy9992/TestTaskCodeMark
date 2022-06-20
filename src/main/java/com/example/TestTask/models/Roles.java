@@ -1,10 +1,8 @@
 package com.example.TestTask.models;
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 @Getter
@@ -19,7 +17,7 @@ public class Roles {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_roles")
-    private long id;
+    private Long id;
 
     @Column(name = "name_role")
     private String nameRole;

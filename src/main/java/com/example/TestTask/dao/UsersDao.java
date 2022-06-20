@@ -16,4 +16,6 @@ public interface UsersDao {
    void addNewUserWithRoles(Users user);
 
    boolean editUser(Users user);
+
+
 }

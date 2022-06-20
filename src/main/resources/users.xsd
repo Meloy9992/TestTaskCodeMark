@@ -56,22 +56,24 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="success" type="xs:boolean"/>
+                <xs:element maxOccurs="unbounded" minOccurs="0" name="errors" nillable="true" type="xs:string"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="AddFromIdRequest">
+    <xs:element name="EditUserRequest">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="id" type="xs:int"/>
+                <xs:element name="user" type="tns:users"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="AddFromIdResponse">
+    <xs:element name="EditUserResponse">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="success" type="xs:boolean"/>
+                <xs:element maxOccurs="unbounded" minOccurs="0" name="errors" nillable="true" type="xs:string"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>

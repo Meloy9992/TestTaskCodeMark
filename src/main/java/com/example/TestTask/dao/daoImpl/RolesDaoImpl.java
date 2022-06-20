@@ -4,8 +4,10 @@ import com.example.TestTask.dao.RolesDao;
 import com.example.TestTask.models.Roles;
 import com.example.TestTask.models.Users;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import static com.example.TestTask.utils.HibernateUtil.getSessionFactory;
@@ -14,7 +16,16 @@ import static com.example.TestTask.utils.HibernateUtil.getSessionFactory;
 public class RolesDaoImpl implements RolesDao {
     @Override
     public boolean EditListRoles(List<Roles> rolesList) {
-        return false;
+        Session session = getSessionFactory().openSession();
+        session.beginTransaction();
+
+        for (int i=0; i<rolesList.size(); i++){
+            session.saveOrUpdate(rolesList.get(i));
+        }
+
+        session.getTransaction().commit();
+        session.close();
+        return true;
     }
 
     @Override
@@ -45,4 +56,30 @@ public class RolesDaoImpl implements RolesDao {
         session.close();
         return true;
     }
+
+    @Override
+    public Roles getRoles(long id) {
+        Session session = getSessionFactory().openSession();
+
+        Query query = session.createQuery("from Roles where id = :id");
+        query.setParameter("id", id);
+        Roles role = (Roles) query.getSingleResult();
+        session.close();
+        return role;
+    }
+
+    @Override
+    public Long getLastId() {
+        Long id=null;
+        BigInteger bigInteger;
+        Session session = getSessionFactory().openSession();
+
+        Query query = session.createSQLQuery("select last_value from roles_id_roles_seq");
+        bigInteger = (BigInteger) query.getSingleResult();
+        id=bigInteger.longValue();
+        session.close();
+        return id;
+    }
+
+
 }

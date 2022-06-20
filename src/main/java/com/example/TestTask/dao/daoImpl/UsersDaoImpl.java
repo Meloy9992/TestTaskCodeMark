@@ -32,7 +32,6 @@ public class UsersDaoImpl implements UsersDao {
                 userXml.setPassword((String) obj[2]);//pass
                 usersList.add(userXml);
             }
-            System.out.println();
 
         session.close();
         return usersList;
@@ -83,6 +82,11 @@ public class UsersDaoImpl implements UsersDao {
 
     @Override
     public boolean editUser(Users user) {
-        return false;
+        Session session = getSessionFactory().openSession();
+        session.beginTransaction();
+        session.saveOrUpdate(user);
+        session.getTransaction().commit();
+        session.close();
+        return true;
     }
 }

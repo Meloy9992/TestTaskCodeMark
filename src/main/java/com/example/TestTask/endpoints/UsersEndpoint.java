@@ -5,21 +5,20 @@ import com.example.TestTask.dao.RolesDao;
 import com.example.TestTask.dao.UsersDao;
 import com.example.TestTask.models.Roles;
 import com.example.TestTask.models.Users;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.annotation.XmlTransient;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Endpoint
 public class UsersEndpoint {
@@ -29,7 +28,7 @@ public class UsersEndpoint {
     private UsersDao usersDao;
     private RolesDao rolesDao;
 
-    public void setup(){
+    public void setup() {
         UsersPortService service = new UsersPortService();
         UsersPort countryService = service.getUsersPortSoap11();
     }
@@ -46,29 +45,16 @@ public class UsersEndpoint {
         AddNewUserWithRolesResponse response = new AddNewUserWithRolesResponse();
 
         UserXml userXml = request.getUser();
-        List<RolesXml> roleXml = request.getUser().getRoleList();
-        List<Roles> rolesList = new ArrayList<>();
-        Users user = new Users(userXml.getLogin(), userXml.getFirstName(), userXml.getPassword());
 
-        for (int i=0; i< roleXml.size(); i++){
-            try {
-                Roles role = new Roles();
-                role.setNameRole(roleXml.get(i).getRolesName());
-                role.setUser(usersDao.getUserByLoginWithRoles(roleXml.get(i).getLoginUsers()));
-                rolesList.add(role);
-            }catch (Exception e){
-                System.out.println("Не удалось добавить роль");
-            }
-        }
-        user.setRolesList(rolesList);
+        Users user = unmarshal(userXml);
 
         try {
             usersDao.addNewUserWithRoles(user);
 
-            for (int i=0; i< rolesList.size(); i++)
-                rolesDao.AddNewRoles(rolesList.get(i));
+            for (int i = 0; i < user.getRolesList().size(); i++)
+                rolesDao.AddNewRoles(user.getRolesList().get(i));
 
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Неудалось добавить информацию в БД");
             response.setSuccess(false);
             return response;
@@ -83,7 +69,6 @@ public class UsersEndpoint {
         GetListUsersWithoutRolesResponse response = new GetListUsersWithoutRolesResponse();
         List<UserXml> userListWithoutRoles = usersDao.getListUsersWithoutRoles();
 
-        System.out.println();
         response.setUserList(userListWithoutRoles);
 
         return response;
@@ -91,7 +76,7 @@ public class UsersEndpoint {
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getUserByLoginWithRolesRequest")
     @ResponsePayload
-    public GetUserByLoginWithRolesResponse getUserByLoginWithRolesResponse(@RequestPayload GetUserByLoginWithRolesRequest request){
+    public GetUserByLoginWithRolesResponse getUserByLoginWithRolesResponse(@RequestPayload GetUserByLoginWithRolesRequest request) {
         GetUserByLoginWithRolesResponse response = new GetUserByLoginWithRolesResponse();
         Users user = usersDao.getUserByLoginWithRoles(request.getLogin());
 
@@ -104,15 +89,30 @@ public class UsersEndpoint {
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "deleteUserByLoginRequest")
     @ResponsePayload
-    public DeleteUserByLoginResponse deleteUserByLoginResponse(@RequestPayload DeleteUserByLoginRequest request){
+    public DeleteUserByLoginResponse deleteUserByLoginResponse(@RequestPayload DeleteUserByLoginRequest request) {
         DeleteUserByLoginResponse response = new DeleteUserByLoginResponse();
 
         Users users = usersDao.getUserByLoginWithRoles(request.getLogin());
 
         rolesDao.DeleteRole(users);
         usersDao.DeleteUserByLogin(request.getLogin());
-        
+
         response.setSuccess(true);
+        return response;
+    }
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "EditUserRequest")
+    @ResponsePayload
+    public EditUserResponse editUserResponse(@RequestPayload EditUserRequest request) {
+        EditUserResponse response = new EditUserResponse();
+
+        Users user = unmarshal(request.getUserXml());
+
+        rolesDao.EditListRoles(user.getRolesList());
+        usersDao.editUser(user);
+
+        response.setSuccess(true);
+
         return response;
     }
 
@@ -123,13 +123,12 @@ public class UsersEndpoint {
         userXml.setPassword(user.getPassword());
 
         List<Roles> rolesList = user.getRolesList();
-        if (rolesList.size() == 0){
+        if (rolesList.size() == 0) {
             return userXml;
-        }
-        else{
+        } else {
 
             List<RolesXml> rolesXmlList = new ArrayList<>();
-            for (int i=0; i<user.getRolesList().size(); i++){
+            for (int i = 0; i < user.getRolesList().size(); i++) {
                 RolesXml rolesXml = new RolesXml(rolesList.get(i).getId(),
                         rolesList.get(i).getNameRole(), rolesList.get(i).getUser().getLogin());
                 rolesXmlList.add(rolesXml);
@@ -142,10 +141,124 @@ public class UsersEndpoint {
 
     public Users unmarshal(UserXml userXml) {
         Users user = new Users(userXml.getLogin(), userXml.getFirstName(), userXml.getPassword());
-        if (userXml.getRolesList().size() == 0){
-            return user;
-        } else
-            user.setRolesList(userXml.getRolesList());
+        List<RolesXml> roleXml = userXml.getRoleList();
+        List<Roles> rolesList = new ArrayList<>();
+
+        for (int i = 0; i < roleXml.size(); i++) {
+            try {
+                Roles role = new Roles();
+                role.setNameRole(roleXml.get(i).getRolesName());
+                role.setUser(user);
+                rolesList.add(role);
+            } catch (Exception e) {
+                System.out.println("Не удалось добавить роль");
+            }
+        }
+        user.setRolesList(rolesList);
         return user;
+    }
+
+    public HashMap<Boolean, List<Exception>> formatterExceptionUser(Users user) {
+        Logger logger = Logger.getLogger(Users.class.getName());
+        HashMap<Boolean, List<Exception>> map = new HashMap<>();
+        List<Exception> errors = new ArrayList<>();
+
+        try {
+            user.getFirstName();
+        } catch (Exception e) {
+            logger.log(Level.INFO, "Отсутствует имя");
+            errors.add(e);
+        }
+        try {
+            user.getLogin();
+        } catch (Exception e) {
+            logger.log(Level.INFO, "Отсутсвует логин");
+            errors.add(e);
+        }
+        try {
+
+        } catch (Exception e) {
+            logger.log(Level.INFO, "Отсутствует пароль");
+            errors.add(e);
+        }
+        try {
+            boolean checkPass = checkPassword(user.getPassword());
+            if (checkPass == false) {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            logger.log(Level.INFO, "Неправильный формат пароля");
+            errors.add(e);
+        }
+
+        if (errors.size() != 0) {
+            map.put(false, errors);
+            return map;
+        } else map.put(true, errors);
+
+        return map;
+    }
+
+    public HashMap<Boolean, List<Exception>> formatter(UserXml user) {
+        Logger logger = Logger.getLogger(Users.class.getName());
+        HashMap<Boolean, List<Exception>> map = new HashMap<>();
+        List<Exception> errors = new ArrayList<>();
+
+        try {
+            user.getFirstName();
+        } catch (Exception e) {
+            logger.log(Level.INFO, "Отсутствует имя");
+            errors.add(e);
+        }
+        try {
+            user.getLogin();
+        } catch (Exception e) {
+            logger.log(Level.INFO, "Отсутсвует логин");
+            errors.add(e);
+        }
+        try {
+            user.getPassword();
+        } catch (Exception e) {
+            logger.log(Level.INFO, "Отсутствует пароль");
+            errors.add(e);
+        }
+        try {
+            boolean checkPass = checkPassword(user.getPassword());
+            if (checkPass == false) {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            logger.log(Level.INFO, "Неправильный формат пароля");
+            errors.add(e);
+        }
+
+        if (errors.size() != 0) {
+            map.put(false, errors);
+            return map;
+        } else map.put(true, errors);
+
+        return map;
+    }
+
+    public boolean checkPassword(String password) {
+        boolean isCapitalLetter = false;
+        char currentCharacter;
+        boolean isNumber = false;
+
+        for (int i = 0; i < password.length(); i++) {
+            currentCharacter = password.charAt(i);
+            if (Character.isDigit(currentCharacter)) {
+                isNumber = true;
+            }
+            if (Character.isUpperCase(currentCharacter)) {
+                isCapitalLetter = true;
+            }
+        }
+
+        if (isCapitalLetter && isNumber == true) {
+            return true;
+        } else
+            return false;
+
     }
 }
