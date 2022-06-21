@@ -8,3 +8,5 @@ SOAP on Spring Framework and Hibernate ORM
 В папке TestTaskXmlService находится клиентский код сгенерированный через wsimport.
 
 Файл testTask - База данных PostgreSQL
+
+Не забудьте установить свой логин, пароль и путь до Базы данных в hibernate.cfg.xml
