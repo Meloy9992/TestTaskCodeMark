@@ -87,4 +87,7 @@ public class EditUserResponse {
         return this.errors;
     }
 
+    public void setErrors(List<String> errors) {
+        this.errors = errors;
+    }
 }

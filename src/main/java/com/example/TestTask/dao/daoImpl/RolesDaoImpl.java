@@ -20,7 +20,7 @@ public class RolesDaoImpl implements RolesDao {
         session.beginTransaction();
 
         for (int i=0; i<rolesList.size(); i++){
-            session.saveOrUpdate(rolesList.get(i));
+            session.save(rolesList.get(i));
         }
 
         session.getTransaction().commit();
@@ -79,6 +79,17 @@ public class RolesDaoImpl implements RolesDao {
         id=bigInteger.longValue();
         session.close();
         return id;
+    }
+
+    @Override
+    public Boolean existsByRoleName(String newRoleName, String login) {
+        Session session = getSessionFactory().openSession();
+        Query query = session.createSQLQuery("SELECT EXISTS(SELECT name_role FROM roles WHERE name_role = :nameRole AND login = :login)")
+                .setParameter("login", login)
+                .setParameter("nameRole", newRoleName);
+        boolean isExist = (boolean) query.getSingleResult();
+        session.close();
+        return isExist;
     }
 
 

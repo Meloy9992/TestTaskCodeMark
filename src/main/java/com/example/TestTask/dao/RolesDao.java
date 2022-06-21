@@ -16,4 +16,6 @@ public interface RolesDao {
     Roles getRoles(long id);
 
     Long getLastId();
+
+    Boolean existsByRoleName(String newRoleName, String nameUser);
 }

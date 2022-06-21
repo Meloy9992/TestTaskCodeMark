@@ -87,4 +87,7 @@ public class AddNewUserWithRolesResponse {
         return this.errors;
     }
 
+    public void setErrors(List<String> errors) {
+        this.errors = errors;
+    }
 }

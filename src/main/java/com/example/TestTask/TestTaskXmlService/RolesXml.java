@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class RolesXml {
 
-    protected long id;
+    protected Long id;
     @XmlElement(required = true)
     protected String rolesName;
     @XmlElement(required = true)
@@ -48,7 +48,7 @@ public class RolesXml {
      * Gets the value of the id property.
      * 
      */
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -56,7 +56,7 @@ public class RolesXml {
      * Sets the value of the id property.
      * 
      */
-    public void setId(long value) {
+    public void setId(Long value) {
         this.id = value;
     }
 
@@ -108,7 +108,7 @@ public class RolesXml {
         this.loginUsers = value;
     }
 
-    public RolesXml(long id, String rolesName, String loginUsers) {
+    public RolesXml(Long id, String rolesName, String loginUsers) {
         this.id = id;
         this.rolesName = rolesName;
         this.loginUsers = loginUsers;

@@ -15,14 +15,14 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Roles {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_roles")
     private Long id;
 
     @Column(name = "name_role")
     private String nameRole;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "login")
     @XmlTransient
     private Users user;

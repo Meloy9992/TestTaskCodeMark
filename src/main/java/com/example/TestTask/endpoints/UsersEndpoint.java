@@ -105,9 +105,31 @@ public class UsersEndpoint {
     @ResponsePayload
     public EditUserResponse editUserResponse(@RequestPayload EditUserRequest request) {
         EditUserResponse response = new EditUserResponse();
+        List<Roles> newRolesList = new ArrayList<>();
 
         Users user = unmarshal(request.getUserXml());
 
+        List<Roles> usersRoleList = user.getRolesList();
+
+        Users userDb = usersDao.getUserByLoginWithRoles(user.getLogin());
+
+        List<Roles> dbRoleList = userDb.getRolesList();
+
+        for (int i = 0; i < usersRoleList.size(); i++) {
+            if (rolesDao.existsByRoleName(usersRoleList.get(i).getNameRole(), user.getLogin())){
+                for (int j=0; j<dbRoleList.size(); j++){
+                    if (dbRoleList.get(j).getNameRole().hashCode() == usersRoleList.get(i).getNameRole().hashCode()){
+                        dbRoleList.get(j).setUser(user);
+                        newRolesList.add(dbRoleList.get(j));
+                    }
+                }
+            }else {
+                newRolesList.add(user.getRolesList().get(i));
+            }
+        }
+        user.setRolesList(newRolesList);
+
+        rolesDao.DeleteRole(dbRoleList.get(0).getUser());
         rolesDao.EditListRoles(user.getRolesList());
         usersDao.editUser(user);
 
@@ -147,6 +169,9 @@ public class UsersEndpoint {
         for (int i = 0; i < roleXml.size(); i++) {
             try {
                 Roles role = new Roles();
+                if (roleXml.get(i).getId() != null){
+                    role.setId(roleXml.get(i).getId());
+                }
                 role.setNameRole(roleXml.get(i).getRolesName());
                 role.setUser(user);
                 rolesList.add(role);
@@ -261,4 +286,5 @@ public class UsersEndpoint {
             return false;
 
     }
+
 }
