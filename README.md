@@ -6,3 +6,5 @@ SOAP on Spring Framework and Hibernate ORM
 По умолчанию formatter метод возвращает список стандартных Exception. Можно создать свои Exception и кидать их.
 
 В папке TestTaskXmlService находится клиентский код сгенерированный через wsimport.
+
+Файл testTask - База данных PostgreSQL
