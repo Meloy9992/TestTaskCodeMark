@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name= "roles")
+@Table(name = "roles")
 public class Roles {
 
     @Id

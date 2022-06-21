@@ -19,7 +19,7 @@ public class RolesDaoImpl implements RolesDao {
         Session session = getSessionFactory().openSession();
         session.beginTransaction();
 
-        for (int i=0; i<rolesList.size(); i++){
+        for (int i = 0; i < rolesList.size(); i++) {
             session.save(rolesList.get(i));
         }
 
@@ -43,13 +43,12 @@ public class RolesDaoImpl implements RolesDao {
         Session session = getSessionFactory().openSession();
         session.beginTransaction();
 
-        try{
+        try {
             session.createQuery("DELETE Roles WHERE user.login = :login")
                     .setParameter("login", users.getLogin())
                     .executeUpdate();
             session.getTransaction().commit();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             session.close();
             return false;
         }
@@ -69,20 +68,7 @@ public class RolesDaoImpl implements RolesDao {
     }
 
     @Override
-    public Long getLastId() {
-        Long id=null;
-        BigInteger bigInteger;
-        Session session = getSessionFactory().openSession();
-
-        Query query = session.createSQLQuery("select last_value from roles_id_roles_seq");
-        bigInteger = (BigInteger) query.getSingleResult();
-        id=bigInteger.longValue();
-        session.close();
-        return id;
-    }
-
-    @Override
-    public Boolean existsByRoleName(String newRoleName, String login) {
+    public Boolean existsByRoleNameAndFirstName(String newRoleName, String login) {
         Session session = getSessionFactory().openSession();
         Query query = session.createSQLQuery("SELECT EXISTS(SELECT name_role FROM roles WHERE name_role = :nameRole AND login = :login)")
                 .setParameter("login", login)

@@ -13,11 +13,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name= "users")
+@Table(name = "users")
 public class Users {
 
     @Id
-    @Column(name = "login", unique=true)
+    @Column(name = "login", unique = true)
     private String login;
 
     @Column(name = "first_name")

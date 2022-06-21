@@ -8,6 +8,7 @@ import com.example.TestTask.models.Users;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
@@ -24,14 +25,14 @@ public class UsersDaoImpl implements UsersDao {
 
         List<UserXml> usersList = new ArrayList<>();
 
-        for (int i=0; i <resultList.size(); i++){
+        for (int i = 0; i < resultList.size(); i++) {
             Object[] obj = resultList.get(i);
-                UserXml userXml = new UserXml();
-                userXml.setLogin((String) obj[0]);//login
-                userXml.setFirstName((String) obj[1]);//firstName
-                userXml.setPassword((String) obj[2]);//pass
-                usersList.add(userXml);
-            }
+            UserXml userXml = new UserXml();
+            userXml.setLogin((String) obj[0]);//login
+            userXml.setFirstName((String) obj[1]);//firstName
+            userXml.setPassword((String) obj[2]);//pass
+            usersList.add(userXml);
+        }
 
         session.close();
         return usersList;
@@ -61,8 +62,7 @@ public class UsersDaoImpl implements UsersDao {
                     .executeUpdate();
             session.getTransaction().commit();
             session.close();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             session.close();
             return false;
         }
@@ -73,12 +73,12 @@ public class UsersDaoImpl implements UsersDao {
     @Override
     public void addNewUserWithRoles(Users user) {
 
-            Session session = getSessionFactory().openSession();
-            session.beginTransaction();
-            session.save(user);
-            session.getTransaction().commit();
-            session.close();
-        }
+        Session session = getSessionFactory().openSession();
+        session.beginTransaction();
+        session.save(user);
+        session.getTransaction().commit();
+        session.close();
+    }
 
     @Override
     public boolean editUser(Users user) {

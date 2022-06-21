@@ -28,11 +28,6 @@ public class UsersEndpoint {
     private UsersDao usersDao;
     private RolesDao rolesDao;
 
-    public void setup() {
-        UsersPortService service = new UsersPortService();
-        UsersPort countryService = service.getUsersPortSoap11();
-    }
-
     @Autowired
     public UsersEndpoint(UsersDao usersDao, RolesDao rolesDao) {
         this.usersDao = usersDao;
@@ -46,7 +41,7 @@ public class UsersEndpoint {
 
         UserXml userXml = request.getUser();
 
-        HashMap<Boolean, List<Exception>> formatter = formatterExceptionUserXml(userXml);
+        HashMap<Boolean, List<Exception>> formatter = formatterExceptionUser(userXml);
 
         if (formatter.containsKey(false)) {
             response.setSuccess(false);
@@ -75,10 +70,11 @@ public class UsersEndpoint {
         response.setSuccess(true);
         return response;
     }
+    //Добавление нового пользователя с ролями
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getListUsersWithoutRolesRequest")
     @ResponsePayload
-    public GetListUsersWithoutRolesResponse getListUsersWithoutRoles(@RequestPayload GetListUsersWithoutRolesRequest request) throws JAXBException, IOException {
+    public GetListUsersWithoutRolesResponse getListUsersWithoutRoles(@RequestPayload GetListUsersWithoutRolesRequest request) {
         GetListUsersWithoutRolesResponse response = new GetListUsersWithoutRolesResponse();
         List<UserXml> userListWithoutRoles = usersDao.getListUsersWithoutRoles();
 
@@ -86,6 +82,7 @@ public class UsersEndpoint {
 
         return response;
     }
+    //Получение списка пользователей без ролей
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getUserByLoginWithRolesRequest")
     @ResponsePayload
@@ -99,6 +96,7 @@ public class UsersEndpoint {
 
         return response;
     }
+    //Получение пользователя по логину с ролями
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "deleteUserByLoginRequest")
     @ResponsePayload
@@ -107,12 +105,18 @@ public class UsersEndpoint {
 
         Users users = usersDao.getUserByLoginWithRoles(request.getLogin());
 
-        rolesDao.DeleteRole(users);
-        usersDao.DeleteUserByLogin(request.getLogin());
+        try {
+            rolesDao.DeleteRole(users);
+            usersDao.DeleteUserByLogin(request.getLogin());
 
-        response.setSuccess(true);
+            response.setSuccess(true);
+        }catch (Exception e){
+            response.setSuccess(false);
+            return response;
+        }
         return response;
     }
+    //Удаление пользователя по логину
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "EditUserRequest")
     @ResponsePayload
@@ -124,7 +128,7 @@ public class UsersEndpoint {
 
         HashMap<Boolean, List<Exception>> formatter = formatterExceptionUser(user);
 
-        if (formatter.containsKey(false)) {
+        if (formatter.containsKey(false)) { // Если произошла ошибка форматирования данных установить возврат false и также установить массив ошибок
             response.setSuccess(false);
 
             List<String> errorsString = new ArrayList<>();
@@ -142,9 +146,9 @@ public class UsersEndpoint {
         List<Roles> dbRoleList = userDb.getRolesList();
 
         for (int i = 0; i < usersRoleList.size(); i++) {
-            if (rolesDao.existsByRoleName(usersRoleList.get(i).getNameRole(), user.getLogin())) {
+            if (rolesDao.existsByRoleNameAndFirstName(usersRoleList.get(i).getNameRole(), user.getLogin())) { //Если роль и логин у данного пользователя есть то
                 for (int j = 0; j < dbRoleList.size(); j++) {
-                    if (dbRoleList.get(j).getNameRole().hashCode() == usersRoleList.get(i).getNameRole().hashCode()) {
+                    if (dbRoleList.get(j).getNameRole().hashCode() == usersRoleList.get(i).getNameRole().hashCode()) {//Если hash-code названия роли совпал, то добавить существующую роль
                         dbRoleList.get(j).setUser(user);
                         newRolesList.add(dbRoleList.get(j));
                     }
@@ -163,6 +167,7 @@ public class UsersEndpoint {
 
         return response;
     }
+    //редактирование пользователя
 
     public UserXml marshal(Users user) {
         UserXml userXml = new UserXml();
@@ -186,6 +191,7 @@ public class UsersEndpoint {
         }
         return userXml;
     }
+    //Преоборазование класса User в класс UserXml
 
     public Users unmarshal(UserXml userXml) {
         Users user = new Users(userXml.getLogin(), userXml.getFirstName(), userXml.getPassword());
@@ -208,6 +214,7 @@ public class UsersEndpoint {
         user.setRolesList(rolesList);
         return user;
     }
+    //Преоборазование класса UserXml в класс User
 
     public HashMap<Boolean, List<Exception>> formatterExceptionUser(Users user) {
         Logger logger = Logger.getLogger(Users.class.getName());
@@ -251,8 +258,9 @@ public class UsersEndpoint {
 
         return map;
     }
+    // Форматирование класса User
 
-    public HashMap<Boolean, List<Exception>> formatterExceptionUserXml(UserXml user) {
+    public HashMap<Boolean, List<Exception>> formatterExceptionUser(UserXml user) {
         Logger logger = Logger.getLogger(Users.class.getName());
         HashMap<Boolean, List<Exception>> map = new HashMap<>();
         List<Exception> errors = new ArrayList<>();
@@ -295,6 +303,7 @@ public class UsersEndpoint {
 
         return map;
     }
+    // Форматирование класса UserXml
 
     public boolean checkPassword(String password) {
         boolean isCapitalLetter = false;
@@ -317,5 +326,6 @@ public class UsersEndpoint {
             return false;
 
     }
+    // Логика проверки пароля
 
 }

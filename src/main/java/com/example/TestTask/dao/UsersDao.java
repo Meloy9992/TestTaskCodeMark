@@ -7,15 +7,15 @@ import java.util.List;
 
 public interface UsersDao {
 
-   List<UserXml> getListUsersWithoutRoles();
+    List<UserXml> getListUsersWithoutRoles();
 
-   Users getUserByLoginWithRoles(String login);
+    Users getUserByLoginWithRoles(String login);
 
-   boolean DeleteUserByLogin(String login);
+    boolean DeleteUserByLogin(String login);
 
-   void addNewUserWithRoles(Users user);
+    void addNewUserWithRoles(Users user);
 
-   boolean editUser(Users user);
+    boolean editUser(Users user);
 
 
 }
