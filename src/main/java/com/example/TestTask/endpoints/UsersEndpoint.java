@@ -46,6 +46,19 @@ public class UsersEndpoint {
 
         UserXml userXml = request.getUser();
 
+        HashMap<Boolean, List<Exception>> formatter = formatterExceptionUserXml(userXml);
+
+        if (formatter.containsKey(false)) {
+            response.setSuccess(false);
+
+            List<String> errorsString = new ArrayList<>();
+            for (int i = 0; i < formatter.get(false).size(); i++) {
+                errorsString.add(formatter.get(false).get(i).toString());
+            }
+            response.setErrors(errorsString);
+            return response;
+        }
+
         Users user = unmarshal(userXml);
 
         try {
@@ -109,6 +122,19 @@ public class UsersEndpoint {
 
         Users user = unmarshal(request.getUserXml());
 
+        HashMap<Boolean, List<Exception>> formatter = formatterExceptionUser(user);
+
+        if (formatter.containsKey(false)) {
+            response.setSuccess(false);
+
+            List<String> errorsString = new ArrayList<>();
+            for (int i = 0; i < formatter.get(false).size(); i++) {
+                errorsString.add(formatter.get(false).get(i).toString());
+            }
+            response.setErrors(errorsString);
+            return response;
+        }
+
         List<Roles> usersRoleList = user.getRolesList();
 
         Users userDb = usersDao.getUserByLoginWithRoles(user.getLogin());
@@ -116,14 +142,14 @@ public class UsersEndpoint {
         List<Roles> dbRoleList = userDb.getRolesList();
 
         for (int i = 0; i < usersRoleList.size(); i++) {
-            if (rolesDao.existsByRoleName(usersRoleList.get(i).getNameRole(), user.getLogin())){
-                for (int j=0; j<dbRoleList.size(); j++){
-                    if (dbRoleList.get(j).getNameRole().hashCode() == usersRoleList.get(i).getNameRole().hashCode()){
+            if (rolesDao.existsByRoleName(usersRoleList.get(i).getNameRole(), user.getLogin())) {
+                for (int j = 0; j < dbRoleList.size(); j++) {
+                    if (dbRoleList.get(j).getNameRole().hashCode() == usersRoleList.get(i).getNameRole().hashCode()) {
                         dbRoleList.get(j).setUser(user);
                         newRolesList.add(dbRoleList.get(j));
                     }
                 }
-            }else {
+            } else {
                 newRolesList.add(user.getRolesList().get(i));
             }
         }
@@ -169,7 +195,7 @@ public class UsersEndpoint {
         for (int i = 0; i < roleXml.size(); i++) {
             try {
                 Roles role = new Roles();
-                if (roleXml.get(i).getId() != null){
+                if (roleXml.get(i).getId() != null) {
                     role.setId(roleXml.get(i).getId());
                 }
                 role.setNameRole(roleXml.get(i).getRolesName());
@@ -187,21 +213,23 @@ public class UsersEndpoint {
         Logger logger = Logger.getLogger(Users.class.getName());
         HashMap<Boolean, List<Exception>> map = new HashMap<>();
         List<Exception> errors = new ArrayList<>();
-
         try {
-            user.getFirstName();
+            if (user.getFirstName() == null || user.getFirstName() == "")
+                throw new Exception();
         } catch (Exception e) {
             logger.log(Level.INFO, "Отсутствует имя");
             errors.add(e);
         }
         try {
-            user.getLogin();
+            if (user.getLogin() == null || user.getLogin() == "")
+                throw new Exception();
         } catch (Exception e) {
             logger.log(Level.INFO, "Отсутсвует логин");
             errors.add(e);
         }
         try {
-
+            if (user.getPassword() == null || user.getPassword() == "")
+                throw new Exception();
         } catch (Exception e) {
             logger.log(Level.INFO, "Отсутствует пароль");
             errors.add(e);
@@ -224,25 +252,28 @@ public class UsersEndpoint {
         return map;
     }
 
-    public HashMap<Boolean, List<Exception>> formatter(UserXml user) {
+    public HashMap<Boolean, List<Exception>> formatterExceptionUserXml(UserXml user) {
         Logger logger = Logger.getLogger(Users.class.getName());
         HashMap<Boolean, List<Exception>> map = new HashMap<>();
         List<Exception> errors = new ArrayList<>();
 
         try {
-            user.getFirstName();
+            if (user.getFirstName() == null || user.getFirstName() == "")
+                throw new Exception();
         } catch (Exception e) {
             logger.log(Level.INFO, "Отсутствует имя");
             errors.add(e);
         }
         try {
-            user.getLogin();
+            if (user.getLogin() == null || user.getLogin() == "")
+                throw new Exception();
         } catch (Exception e) {
             logger.log(Level.INFO, "Отсутсвует логин");
             errors.add(e);
         }
         try {
-            user.getPassword();
+            if (user.getPassword() == null || user.getPassword() == "")
+                throw new Exception();
         } catch (Exception e) {
             logger.log(Level.INFO, "Отсутствует пароль");
             errors.add(e);
